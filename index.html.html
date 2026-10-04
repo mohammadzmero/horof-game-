@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة بطل الحروف العربية - مدرسة ذكور الشهيدين بلال وأشرف الأساسية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotate(360deg); opacity: 0; }
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            animation: fall 3s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 md:p-8 text-center relative overflow-hidden">
+        
+        <!-- School Header -->
+        <header class="border-b-2 border-dashed border-sky-300 pb-4 mb-6">
+            <h1 class="text-xl md:text-2xl font-black text-gray-800">مدرسة ذكور الشهيدين بلال وأشرف الأساسية</h1>
+            <p class="text-blue-600 font-bold text-base md:text-lg mt-1">إشراف المعلم الفاضل: محمد عبد الرحمن</p>
+        </header>
+
+        <div id="loginScreen" class="animate-fade-in">
+            <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-6 mb-6">
+                <h2 class="text-2xl font-black text-blue-900 mb-2">أهلاً وسهلاً بك يا بطل المستقبل! 🌟</h2>
+                <p class="text-gray-600 text-base">استعد لتكون أذكى بطل في عالم الحروف العربية (ب، د، ر). هيا اكتب اسمك الثنائي لننطلق في المغامرة:</p>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="studentNameInput" placeholder="اكتب اسمك هنا يا بطل..." class="w-full max-w-md px-6 py-4 text-xl border-3 border-blue-400 rounded-2xl text-center focus:outline-none focus:border-blue-600 shadow-inner">
+                <div id="loginError" class="text-red-500 font-bold text-sm h-6"></div>
+                <div>
+                    <button onclick="startJourney()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xl px-10 py-4 rounded-full shadow-lg transform hover:scale-105 transition-all">
+                        ابدأ المغامرة الآن 🚀
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameScreen" class="hidden animate-fade-in">
+            <div class="flex justify-between items-center mb-4 bg-gray-100 px-4 py-2 rounded-xl">
+                <span id="stageTitle" class="font-bold text-gray-700 text-lg">المرحلة الأولى</span>
+                <button onclick="speakCurrentQuestion()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-md flex items-center justify-center transition-transform hover:scale-110" title="استمع للسؤال">
+                    🔊 الاستماع للسؤال
+                </button>
+            </div>
+
+            <div id="questionBox" class="bg-amber-50 border-r-8 border-amber-500 p-5 rounded-2xl text-xl font-black text-gray-800 mb-6 shadow-sm">
+                <!-- Question text goes here -->
+            </div>
+
+            <div id="optionsGrid" class="grid grid-cols-2 gap-4 mb-6">
+                <!-- Option buttons go here -->
+            </div>
+
+            <div id="feedbackBox" class="text-xl font-bold h-10 mb-2"></div>
+        </div>
+
+        <div id="certificateScreen" class="hidden animate-fade-in">
+            <div class="bg-gradient-to-b from-yellow-50 to-amber-100 border-8 border-amber-400 rounded-3xl p-6 relative shadow-inner">
+                <h2 class="text-3xl font-black text-amber-700 mb-2">شهادة تقدير وتفوق 🏆</h2>
+                <h3 class="text-gray-700 font-bold text-lg mb-4">صادرة عن مدرسة ذكور الشهيدين بلال وأشرف الأساسية</h3>
+                
+                <p class="text-gray-700 text-base leading-relaxed mb-3">
+                    تفتخر المدرسة ومعلمها الفاضل <strong>المعلم محمد عبد الرحمن</strong> بالجهد الرائع والمستوى المشرّف جداً للطالب النجم:
+                </p>
+                
+                <div id="certStudentName" class="text-3xl font-black text-blue-800 my-4 bg-white/80 py-3 px-6 rounded-2xl border-2 border-blue-200 inline-block shadow-sm"></div>
+                
+                <p class="text-gray-700 text-base leading-relaxed mb-4">
+                    وذلك لإتقانه المتميز لحروف ومقاطع وكلمات اللغة العربية بكل تفوق وإبداع!
+                </p>
+
+                <div class="flex justify-between items-center border-t-2 border-dashed border-amber-400 pt-4 mt-6 text-gray-800 font-bold text-sm md:text-base">
+                    <span>إدارة المدرسة</span>
+                    <span>المعلم: محمد عبد الرحمن</span>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <button onclick="location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white font-black text-lg px-8 py-3 rounded-full shadow-lg transition-transform hover:scale-105">
+                    لعب مرة أخرى 🔄
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let studentName = "";
+        let currentStage = 1;
+        let questionIndex = 0;
+
+        const stagesData = [
+            {
+                title: "المرحلة الأولى: تحدي الحروف (ب، د، ر)",
+                items: [
+                    { question: "اختر حرف الباء:", target: "ب", options: ["ر", "د", "ب", "س"] },
+                    { question: "اختر حرف الدال:", target: "د", options: ["ب", "د", "ر", "ن"] },
+                    { question: "اختر حرف الراء:", target: "ر", options: ["د", "ب", "ر", "م"] },
+                    { question: "اختر شكل حرف الباء في أول الكلمة:", target: "بـ", options: ["ر", "د", "بـ", "ن"] },
+                    { question: "اختر حرف الراء:", target: "ر", options: ["ر", "ب", "د", "و"] }
+                ]
+            },
+            {
+                title: "المرحلة الثانية: تحدي المقاطع الطويلة",
+                items: [
+                    { question: "اختر المقطع الطويل: را", target: "را", options: ["را", "دا", "با", "رو"] },
+                    { question: "اختر المقطع الطويل: دو", target: "دو", options: ["ري", "دو", "بي", "دا"] },
+                    { question: "اختر المقطع الطويل: بي", target: "بي", options: ["با", "بو", "بي", "را"] },
+                    { question: "اختر المقطع الطويل: دا", target: "دا", options: ["دا", "رو", "بي", "دو"] },
+                    { question: "اختر المقطع الطويل: بو", target: "بو", options: ["را", "بو", "دي", "با"] }
+                ]
+            },
+            {
+                title: "المرحلة الثالثة: تحدي الكلمات",
+                items: [
+                    { question: "اختر الكلمة الصحيحة: باب", target: "باب", options: ["باب", "دار", "دود", "داري"] },
+                    { question: "اختر الكلمة الصحيحة: دار", target: "دار", options: ["دوري", "دار", "بير", "باب"] },
+                    { question: "اختر الكلمة الصحيحة: دود", target: "دود", options: ["دار", "دود", "باب", "داري"] },
+                    { question: "اختر الكلمة الصحيحة: داري", target: "داري", options: ["دوري", "داري", "باب", "دود"] },
+                    { question: "اختر الكلمة الصحيحة: دوري", target: "دوري", options: ["دار", "باب", "دوري", "داري"] }
+                ]
+            },
+            {
+                title: "المرحلة الرابعة: تكوين الكلمات من الحروف",
+                items: [
+                    { question: "نكون من الحروف [ب - ا - ب] كلمة:", target: "باب", options: ["باب", "دار", "دود"] },
+                    { question: "نكون من الحروف [د - ا - ر] كلمة:", target: "دار", options: ["بير", "دار", "دوري"] },
+                    { question: "نكون من الحروف [د - و - د] كلمة:", target: "دود", options: ["دود", "باب", "داري"] },
+                    { question: "نكون من الحروف [د - ا - ر - ي] كلمة:", target: "داري", options: ["داري", "دوري", "باب"] },
+                    { question: "نكون من الحروف [د - و - ر - ي] كلمة:", target: "دوري", options: ["باب", "دوري", "دار"] }
+                ]
+            }
+        ];
+
+        function speak(text, callback) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ar-SA';
+                utterance.rate = 0.75;
+                utterance.pitch = 1.1;
+                if (callback) {
+                    utterance.onend = callback;
+                }
+                window.speechSynthesis.speak(utterance);
+            } else if (callback) {
+                callback();
+            }
+        }
+
+        function startJourney() {
+            const inputVal = document.getElementById('studentNameInput').value.trim();
+            const errorBox = document.getElementById('loginError');
+            
+            if (!inputVal) {
+                errorBox.innerText = "الرجاء كتابة اسم البطل أولاً لنبدأ المغامرة!";
+                return;
+            }
+            errorBox.innerText = "";
+            studentName = inputVal;
+
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+
+            speak("أهلاً ومرحباً بك يا بطلنا المتميز " + studentName + " في مدرسة ذكور الشهيدين بلال وأشرف الأساسية، مع المعلم محمد عبد الرحمن. أنت رائع حقاً، هيا نبدأ المرحلة الأولى.", loadQuestion);
+        }
+
+        function loadQuestion() {
+            let stageObj = stagesData[currentStage - 1];
+            
+            if (questionIndex >= stageObj.items.length) {
+                currentStage++;
+                questionIndex = 0;
+                if (currentStage > stagesData.length) {
+                    showCertificate();
+                    return;
+                }
+                stageObj = stagesData[currentStage - 1];
+                speak("أنت ذكي جداً! لقد أنهيت هذه المرحلة بنجاح. ننتقل الآن إلى " + stageObj.title, () => {
+                    loadQuestion();
+                });
+                return;
+            }
+
+            document.getElementById('stageTitle').innerText = stageObj.title;
+            let currentItem = stageObj.items[questionIndex];
+            
+            document.getElementById('questionBox').innerText = currentItem.question;
+            document.getElementById('feedbackBox').innerText = "";
+
+            let grid = document.getElementById('optionsGrid');
+            grid.innerHTML = "";
+
+            let shuffledOptions = [...currentItem.options].sort(() => Math.random() - 0.5);
+            shuffledOptions.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = "bg-amber-100 hover:bg-amber-200 border-4 border-amber-300 text-gray-800 text-3xl font-black py-5 rounded-2xl shadow-md transition-all transform hover:scale-105 active:scale-95";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, currentItem.target);
+                grid.appendChild(btn);
+            });
+
+            speak(currentItem.question);
+        }
+
+        function checkAnswer(selected, target) {
+            let feedback = document.getElementById('feedbackBox');
+            if (selected === target) {
+                feedback.className = "text-xl font-bold h-10 mb-2 text-emerald-600 animate-bounce";
+                feedback.innerText = "أحسنت يا بطل! إجابة صحيحة وموفقة 🌟";
+                speak("أحسنت يا بطل!", () => {
+                    questionIndex++;
+                    setTimeout(loadQuestion, 500);
+                });
+            } else {
+                feedback.className = "text-xl font-bold h-10 mb-2 text-rose-600";
+                feedback.innerText = "حاول مرة أخرى يا بطل، أنت تستطيع! 💪";
+                speak("حاول مرة أخرى يا بطل.");
+            }
+        }
+
+        function speakCurrentQuestion() {
+            let stageObj = stagesData[currentStage - 1];
+            if (stageObj && stageObj.items[questionIndex]) {
+                speak(stageObj.items[questionIndex].question);
+            }
+        }
+
+        function showCertificate() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('certificateScreen').classList.remove('hidden');
+            document.getElementById('certStudentName').innerText = studentName;
+
+            // Generate confetti elements
+            for (let i = 0; i < 60; i++) {
+                let conf = document.createElement('div');
+                conf.className = 'confetti-piece';
+                conf.style.left = Math.random() * 100 + '%';
+                conf.style.top = -20 + 'px';
+                conf.style.backgroundColor = ['#f59e0b', '#ef4444', '#3b82f6', '#10b981', '#8b5cf6'][Math.floor(Math.random() * 5)];
+                conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                conf.style.animationDelay = (Math.random() * 2) + 's';
+                document.getElementById('certificateScreen').appendChild(conf);
+            }
+
+            let certSpeech = "مبارك للبطل المتميز " + studentName + " حصوله على شهادة التقدير والتميز من مدرسة ذكور الشهيدين بلال وأشرف الأساسية، بإشراف المعلم محمد عبد الرحمن. كل الشكر والتقدير لأهالينا الكرام.";
+            speak(certSpeech);
+        }
+    </script>
+</body>
+</html>
